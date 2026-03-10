@@ -20,13 +20,13 @@ app.get("/", (req, res) => {
 async function initDB() {
   try {
     await pool.query(`
-      CREATE TABLE IF NOT EXISTS messages(
+      CREATE TABLE IF NOT EXISTS cicd(
         id SERIAL PRIMARY KEY,
         text VARCHAR(255)
       )
     `);
 
-    console.log("messages table ready");
+    console.log("cicd table ready");
   } catch (err) {
     console.error("Database init error:", err);
   }
@@ -36,7 +36,7 @@ initDB();
 
 /* API routes */
 app.get("/api/messages", async (req, res) => {
-  const result = await pool.query("SELECT * FROM messages");
+  const result = await pool.query("SELECT * FROM cicd");
   res.json(result.rows);
 });
 
@@ -44,7 +44,7 @@ app.post("/api/messages", async (req, res) => {
   const { text } = req.body;
 
   const result = await pool.query(
-    "INSERT INTO messages(text) VALUES($1) RETURNING *",
+    "INSERT INTO cicd(text) VALUES($1) RETURNING *",
     [text]
   );
 
