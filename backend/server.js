@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
+const path = require("path"); // <- add this
 const pool = require("./db");
 
 const app = express();
@@ -8,8 +9,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-/* init database */
+/* Serve frontend */
+app.use(express.static(path.join(__dirname, "../frontend"))); // serve static files
 
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/index.html"));
+});
+
+/* init database */
 async function initDB() {
   try {
     await pool.query(`
@@ -20,7 +27,6 @@ async function initDB() {
     `);
 
     console.log("messages table ready");
-
   } catch (err) {
     console.error("Database init error:", err);
   }
@@ -28,15 +34,13 @@ async function initDB() {
 
 initDB();
 
-/* routes */
-
+/* API routes */
 app.get("/api/messages", async (req, res) => {
   const result = await pool.query("SELECT * FROM messages");
   res.json(result.rows);
 });
 
 app.post("/api/messages", async (req, res) => {
-
   const { text } = req.body;
 
   const result = await pool.query(
@@ -45,7 +49,6 @@ app.post("/api/messages", async (req, res) => {
   );
 
   res.json(result.rows[0]);
-
 });
 
 const PORT = process.env.PORT || 3000;

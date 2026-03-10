@@ -1,0 +1,47 @@
+name: Node CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: dev_user
+          POSTGRES_PASSWORD: dev_pass
+          POSTGRES_DB: cicd_demo
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U dev_user -d cicd_demo"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Setup Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: Install backend dependencies
+      run: cd backend && npm install
+
+    - name: Run backend tests
+      run: |
+        cd backend
+        npm install --save-dev jest supertest
+        echo "No tests yet, skipping" # replace with `npm test` once you add tests
+
+    - name: Echo CI working
+      run: echo "✅ CI pipeline passed"
