@@ -50,7 +50,41 @@ fullstack-cicd-demo
    - Auto-deploys to Render
 
 ---
+## Project workflow
+```
+Developer
+   │
+   ▼
+Push code
+   │
+   ▼
+GitHub Repository
+   │
+   ▼
+GitHub Actions CI
+   │
+   ├ install dependencies
+   ├ run tests
+   ├ verify build
+   └ CI success
+   │
+   ▼
+Trigger Render Deploy
+   │
+   ▼
+Render builds project
+   │
+   ▼
+Render Web Service
+   │
+   ▼
+Render PostgreSQL
+   │
+   ▼
+Live Application
+```
 
+---
 ## Local Development
 
 ### Prerequisites
