@@ -26,6 +26,7 @@ jobs:
           --health-retries 5
 
     steps:
+
     - name: Checkout repo
       uses: actions/checkout@v3
 
@@ -40,8 +41,11 @@ jobs:
     - name: Run backend tests
       run: |
         cd backend
-        npm install --save-dev jest supertest
-        echo "No tests yet, skipping" # replace with `npm test` once you add tests
+        echo "No tests yet"
 
-    - name: Echo CI working
+    - name: CI Passed
       run: echo "✅ CI pipeline passed"
+
+    - name: Trigger Render Deploy
+      if: github.ref == 'refs/heads/main'
+      run: curl ${{ secrets.RENDER_DEPLOY_HOOK }}
